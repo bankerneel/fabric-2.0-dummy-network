@@ -1,0 +1,101 @@
+version: '2'
+
+networks:
+  network:
+
+volumes:
+  couchdb_wallet_vol:
+
+services:
+  couchdb0.superadmin.sosh.com:
+    container_name: couchdb0.superadmin.sosh.com
+    image: couchdb:2.3
+    environment:
+      - COUCHDB_USER=
+      - COUCHDB_PASSWORD=
+    ports:
+      - "5984:5984"
+    networks:
+      - network
+
+  peer0.superadmin.sosh.com:
+    environment:
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb0.superadmin.sosh.com:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
+    depends_on:
+      - couchdb0.superadmin.sosh.com
+
+  couchdb1.superadmin.sosh.com:
+    container_name: couchdb1.superadmin.sosh.com
+    image: couchdb:2.3
+    environment:
+      - COUCHDB_USER=
+      - COUCHDB_PASSWORD=
+    ports:
+      - "6984:5984"
+    networks:
+      - network
+
+  peer1.superadmin.sosh.com:
+    environment:
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb1.superadmin.sosh.com:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
+    depends_on:
+      - couchdb1.superadmin.sosh.com
+
+  couchdb0.users.sosh.com:
+    container_name: couchdb0.users.sosh.com
+    image: couchdb:2.3
+    environment:
+      - COUCHDB_USER=
+      - COUCHDB_PASSWORD=
+    ports:
+      - "7984:5984"
+    networks:
+      - network
+
+  peer0.users.sosh.com:
+    environment:
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb0.users.sosh.com:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
+    depends_on:
+      - couchdb0.users.sosh.com
+
+  couchdb1.users.sosh.com:
+    container_name: couchdb1.users.sosh.com
+    image: couchdb:2.3
+    environment:
+      - COUCHDB_USER=
+      - COUCHDB_PASSWORD=
+    ports:
+      - "8984:5984"
+    networks:
+      - network
+
+  peer1.users.sosh.com:
+    environment:
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb1.users.sosh.com:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
+    depends_on:
+      - couchdb1.users.sosh.com
+
+  couchdb_wallet:
+    image: couchdb:2.3.1
+    container_name: couchdb_wallet
+    hostname: couchdb_wallet
+    network_mode: bridge
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=adminpw
+    ports:
+      - "9984:5984"
+    volumes:
+      - couchdb_wallet_vol:/opt/couchdb/data

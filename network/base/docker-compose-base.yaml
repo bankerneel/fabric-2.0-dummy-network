@@ -1,0 +1,106 @@
+version: '2'
+
+services:
+
+  orderer.sosh.com:
+    container_name: orderer.sosh.com
+    extends:
+      file: peer-base.yaml
+      service: orderer-base
+    volumes:
+        - ../channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+        - ../crypto-config/ordererOrganizations/sosh.com/orderers/orderer.sosh.com/msp:/var/hyperledger/orderer/msp
+        - ../crypto-config/ordererOrganizations/sosh.com/orderers/orderer.sosh.com/tls/:/var/hyperledger/orderer/tls
+        - orderer.sosh.com:/var/hyperledger/production/orderer
+    ports:
+      - 7050:7050
+
+  peer0.superadmin.sosh.com:
+    container_name: peer0.superadmin.sosh.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.superadmin.sosh.com
+      - CORE_PEER_ADDRESS=peer0.superadmin.sosh.com:7051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:7051
+      - CORE_PEER_CHAINCODEADDRESS=peer0.superadmin.sosh.com:7052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.superadmin.sosh.com:8051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.superadmin.sosh.com:7051
+      - CORE_PEER_LOCALMSPID=superadminMSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/superadmin.sosh.com/peers/peer0.superadmin.sosh.com/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/superadmin.sosh.com/peers/peer0.superadmin.sosh.com/tls:/etc/hyperledger/fabric/tls
+        - peer0.superadmin.sosh.com:/var/hyperledger/production
+    ports:
+      - 7051:7051
+
+  peer1.superadmin.sosh.com:
+    container_name: peer1.superadmin.sosh.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer1.superadmin.sosh.com
+      - CORE_PEER_ADDRESS=peer1.superadmin.sosh.com:8051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:8051
+      - CORE_PEER_CHAINCODEADDRESS=peer1.superadmin.sosh.com:8052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:8052
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.superadmin.sosh.com:8051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.superadmin.sosh.com:7051
+      - CORE_PEER_LOCALMSPID=superadminMSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/superadmin.sosh.com/peers/peer1.superadmin.sosh.com/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/superadmin.sosh.com/peers/peer1.superadmin.sosh.com/tls:/etc/hyperledger/fabric/tls
+        - peer1.superadmin.sosh.com:/var/hyperledger/production
+
+    ports:
+      - 8051:8051
+
+  peer0.users.sosh.com:
+    container_name: peer0.users.sosh.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.users.sosh.com
+      - CORE_PEER_ADDRESS=peer0.users.sosh.com:9051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:9051
+      - CORE_PEER_CHAINCODEADDRESS=peer0.users.sosh.com:9052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:9052
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.users.sosh.com:9051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.users.sosh.com:10051
+      - CORE_PEER_LOCALMSPID=usersMSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/users.sosh.com/peers/peer0.users.sosh.com/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/users.sosh.com/peers/peer0.users.sosh.com/tls:/etc/hyperledger/fabric/tls
+        - peer0.users.sosh.com:/var/hyperledger/production
+    ports:
+      - 9051:9051
+
+  peer1.users.sosh.com:
+    container_name: peer1.users.sosh.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer1.users.sosh.com
+      - CORE_PEER_ADDRESS=peer1.users.sosh.com:10051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:10051
+      - CORE_PEER_CHAINCODEADDRESS=peer1.users.sosh.com:10052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:10052
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.users.sosh.com:10051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.users.sosh.com:9051
+      - CORE_PEER_LOCALMSPID=usersMSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/users.sosh.com/peers/peer1.users.sosh.com/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/users.sosh.com/peers/peer1.users.sosh.com/tls:/etc/hyperledger/fabric/tls
+        - peer1.users.sosh.com:/var/hyperledger/production
+    ports:
+      - 10051:10051
+

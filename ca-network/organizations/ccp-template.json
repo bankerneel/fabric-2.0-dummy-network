@@ -1,0 +1,60 @@
+{
+    "name": "sosh-network-${ORG}",
+    "version": "1.0.0",
+    "client": {
+        "organization": "${ORG}",
+        "connection": {
+            "timeout": {
+                "peer": {
+                    "endorser": "300"
+                }
+            }
+        }
+    },
+    "organizations": {
+        "${ORG}": {
+            "mspid": "${ORG}MSP",
+            "peers": [
+                "peer0.${ORG}.sosh.com",
+                "peer1.${ORG}.sosh.com"
+            ],
+            "certificateAuthorities": [
+                "ca.${ORG}.sosh.com"
+            ]
+        }
+    },
+    "peers": {
+        "peer0.${ORG}.sosh.com": {
+            "url": "grpcs://peer0.${ORG}.sosh.com:${P0PORT}",
+            "tlsCACerts": {
+                "pem": "${PEERPEM}"
+            },
+            "grpcOptions": {
+                "ssl-target-name-override": "peer0.${ORG}.sosh.com",
+                "hostnameOverride": "peer0.${ORG}.sosh.com"
+            }
+        },
+        "peer1.${ORG}.sosh.com": {
+            "url": "grpcs://peer1.${ORG}.sosh.com:${P1PORT}",
+            "tlsCACerts": {
+                "pem": "${PEERPEM}"
+            },
+            "grpcOptions": {
+                "ssl-target-name-override": "peer1.${ORG}.sosh.com",
+                "hostnameOverride": "peer1.${ORG}.sosh.com"
+            }
+        }
+    },
+    "certificateAuthorities": {
+        "ca.${ORG}.sosh.com": {
+            "url": "https://ca_${ORG}:${CAPORT}",
+            "caName": "ca-${ORG}",
+            "tlsCACerts": {
+                "pem": "${CAPEM}"
+            },
+            "httpOptions": {
+                "verify": false
+            }
+        }
+    }
+}

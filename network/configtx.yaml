@@ -1,0 +1,229 @@
+---
+################################################################################
+#
+#   Section: Organizations
+#
+#   - This section defines the different organizational identities which will
+#   be referenced later in the configuration.
+#
+################################################################################
+Organizations:
+    - &OrdererOrg
+        Name: OrdererOrg
+
+        ID: OrdererMSP
+
+        MSPDir: ../ca-network/organizations/ordererOrganizations/sosh.com/msp
+
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('OrdererMSP.member')"
+            Writers:
+                Type: Signature
+                Rule: "OR('OrdererMSP.member')"
+            Admins:
+                Type: Signature
+                Rule: "OR('OrdererMSP.admin')"
+
+    - &superadmin
+        Name: superadminMSP
+
+        ID: superadminMSP
+
+        MSPDir: ../ca-network/organizations/peerOrganizations/superadmin.sosh.com/msp
+
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('superadminMSP.admin', 'superadminMSP.peer', 'superadminMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('superadminMSP.admin', 'superadminMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('superadminMSP.admin')"
+            Endorsement:
+                Type: Signature
+                Rule: "OR('superadminMSP.peer')"
+
+        AnchorPeers:
+            - Host: peer0.superadmin.sosh.com
+              Port: 7051
+
+    - &users
+        Name: usersMSP
+
+        ID: usersMSP
+
+        MSPDir: ../ca-network/organizations/peerOrganizations/users.sosh.com/msp
+
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('usersMSP.admin', 'usersMSP.peer', 'usersMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('usersMSP.admin', 'usersMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('usersMSP.admin')"
+            Endorsement:
+                Type: Signature
+                Rule: "OR('usersMSP.peer')"
+
+        AnchorPeers:
+            - Host: peer0.users.sosh.com
+              Port: 9051
+
+Capabilities:
+    Channel: &ChannelCapabilities
+        V2_0: true
+
+    Orderer: &OrdererCapabilities
+        V2_0: true
+
+    Application: &ApplicationCapabilities
+        V2_0: true
+
+################################################################################
+#   SECTION: Application
+################################################################################
+Application: &ApplicationDefaults
+
+    Organizations:
+
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+        LifecycleEndorsement:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Endorsement"
+        Endorsement:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Endorsement"
+
+    Capabilities:
+        <<: *ApplicationCapabilities
+
+################################################################################
+#   SECTION: Orderer
+################################################################################
+Orderer: &OrdererDefaults
+    OrdererType: etcdraft
+    EtcdRaft:
+        Consenters:
+        - Host: orderer.sosh.com
+          Port: 7050
+          ClientTLSCert: ../ca-network/organizations/ordererOrganizations/sosh.com/orderers/orderer.sosh.com/tls/server.crt
+          ServerTLSCert: ../ca-network/organizations/ordererOrganizations/sosh.com/orderers/orderer.sosh.com/tls/server.crt
+        - Host: orderer2.sosh.com
+          Port: 8050
+          ClientTLSCert: ../ca-network/organizations/ordererOrganizations/sosh.com/orderers/orderer2.sosh.com/tls/server.crt
+          ServerTLSCert: ../ca-network/organizations/ordererOrganizations/sosh.com/orderers/orderer2.sosh.com/tls/server.crt
+        - Host: orderer3.sosh.com
+          Port: 9050
+          ClientTLSCert: ../ca-network/organizations/ordererOrganizations/sosh.com/orderers/orderer3.sosh.com/tls/server.crt
+          ServerTLSCert: ../ca-network/organizations/ordererOrganizations/sosh.com/orderers/orderer3.sosh.com/tls/server.crt
+        - Host: orderer4.sosh.com
+          Port: 10050
+          ClientTLSCert: ../ca-network/organizations/ordererOrganizations/sosh.com/orderers/orderer4.sosh.com/tls/server.crt
+          ServerTLSCert: ../ca-network/organizations/ordererOrganizations/sosh.com/orderers/orderer4.sosh.com/tls/server.crt
+        - Host: orderer5.sosh.com
+          Port: 11050
+          ClientTLSCert: ../ca-network/organizations/ordererOrganizations/sosh.com/orderers/orderer5.sosh.com/tls/server.crt
+          ServerTLSCert: ../ca-network/organizations/ordererOrganizations/sosh.com/orderers/orderer5.sosh.com/tls/server.crt
+    Addresses:
+        - orderer.sosh.com:7050
+        - orderer2.sosh.com:8050
+        - orderer3.sosh.com:9050
+        - orderer4.sosh.com:10050
+        - orderer5.sosh.com:11050
+
+    BatchTimeout: 2s
+
+    BatchSize:
+
+        MaxMessageCount: 10
+
+        AbsoluteMaxBytes: 99 MB
+
+        PreferredMaxBytes: 512 KB
+
+    Organizations:
+
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+        BlockValidation:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+
+################################################################################
+#   CHANNEL
+################################################################################
+Channel: &ChannelDefaults
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+
+    Capabilities:
+        <<: *ChannelCapabilities
+
+################################################################################
+#   Profile
+################################################################################
+Profiles:
+
+    soshchannel:
+        Consortium: SoshConsortium
+        <<: *ChannelDefaults
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *superadmin
+                - *users
+            Capabilities:
+                <<: *ApplicationCapabilities
+
+    OrdererChannel:
+        <<: *ChannelDefaults
+        Capabilities:
+            <<: *ChannelCapabilities
+        Orderer:
+            <<: *OrdererDefaults
+
+            Organizations:
+            - *OrdererOrg
+            Capabilities:
+                <<: *OrdererCapabilities
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+            - <<: *OrdererOrg
+        Consortiums:
+            SoshConsortium:
+                Organizations:
+                - *superadmin
+                - *users

@@ -1,0 +1,90 @@
+{
+	"name": "sosh-network",
+	"version": "1.0.0",
+	"client": {
+		"tlsEnable": true,
+		"adminCredential": {
+			"id": "admin",
+			"password": "adminpw"
+		},
+		"enableAuthentication": false,
+		"organization": "superadmin",
+		"connection": {
+			"timeout": {
+				"peer": {
+					"endorser": "300"
+				},
+				"orderer": "300"
+			}
+		}
+	},
+	"channels": {
+		"soshchannel": {
+			"peers": {
+				"peer0.superadmin.sosh.com": {},
+                "peer1.superadmin.sosh.com": {},
+                "peer0.users.sosh.com": {},
+                "peer1.users.sosh.com": {}
+			},
+			"connection": {
+				"timeout": {
+					"peer": {
+						"endorser": "6000",
+						"eventHub": "6000",
+						"eventReg": "6000"
+					}
+				}
+			}
+		}
+	},
+	"organizations": {
+		"superadmin": {
+			"mspid": "superadminMSP",
+			"fullpath": true,
+			"adminPrivateKey": {
+				"path": "/tmp/crypto/peerOrganizations/superadmin.sosh.com/users/Admin@superadmin.sosh.com/msp/keystore/04ef2b288e82e5c81de6f0b8e39dd3fef8dfd1f262fdd27d3e8d82e3560b8bd0_sk"
+			},
+			"peers": ["peer0.superadmin.sosh.com","peer1.superadmin.sosh.com"],
+			"signedCert": {
+				"path": "/tmp/crypto/peerOrganizations/superadmin.sosh.com/users/Admin@superadmin.sosh.com/msp/signcerts/cert.pem"
+			}
+		},
+        "users": {
+			"mspid": "usersMSP",
+			"fullpath": true,
+			"adminPrivateKey": {
+				"path": "/tmp/crypto/peerOrganizations/users.sosh.com/users/Admin@users.sosh.com/msp/keystore/4a7127f99902d8d622204ff2f299e680faa556d4ad160d3401e22689b4d7beaa_sk"
+			},
+			"peers": ["peer0.users.sosh.com","peer1.users.sosh.com"],
+			"signedCert": {
+				"path": "/tmp/crypto/peerOrganizations/users.sosh.com/users/Admin@users.sosh.com/msp/signcerts/cert.pem"
+			}
+		}
+	},
+	"peers": {
+		"peer0.superadmin.sosh.com": {
+			"tlsCACerts": {
+				"path": "/tmp/crypto/peerOrganizations/superadmin.sosh.com/peers/peer0.superadmin.sosh.com/tls/ca.crt"
+			},
+			"url": "grpcs://peer0.superadmin.sosh.com:7051"
+		},
+        "peer1.superadmin.sosh.com": {
+			"tlsCACerts": {
+				"path": "/tmp/crypto/peerOrganizations/superadmin.sosh.com/peers/peer1.superadmin.sosh.com/tls/ca.crt"
+			},
+			"url": "grpcs://peer1.superadmin.sosh.com:8051"
+		},
+        "peer0.users.sosh.com": {
+			"tlsCACerts": {
+				"path": "/tmp/crypto/peerOrganizations/users.sosh.com/peers/peer0.users.sosh.com/tls/ca.crt"
+			},
+			"url": "grpcs://peer0.users.sosh.com:9051"
+		},
+		"peer1.users.sosh.com": {
+			"tlsCACerts": {
+				"path": "/tmp/crypto/peerOrganizations/users.sosh.com/peers/peer1.users.sosh.com/tls/ca.crt"
+			},
+			"url": "grpcs://peer1.users.sosh.com:10051"
+		}
+	}
+}

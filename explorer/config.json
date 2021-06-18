@@ -1,0 +1,9 @@
+{
+	"network-configs": {
+		"sosh-network": {
+			"name": "sosh-network",
+			"profile": "./connection-profile/sosh-network.json"
+		}
+	},
+	"license": "Apache-2.0"
+}

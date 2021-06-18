@@ -1,0 +1,88 @@
+version: '2'
+
+volumes:
+  orderer.sosh.com:
+  peer0.superadmin.sosh.com:
+  peer1.superadmin.sosh.com:
+  peer0.users.sosh.com:
+  peer1.users.sosh.com:
+
+networks:
+  network:
+
+services:
+
+  orderer.sosh.com:
+    extends:
+      file:   base/docker-compose-base.yaml
+      service: orderer.sosh.com
+    container_name: orderer.sosh.com
+    networks:
+      - network
+
+  peer0.superadmin.sosh.com:
+    container_name: peer0.superadmin.sosh.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer0.superadmin.sosh.com
+    networks:
+      - network
+
+  peer1.superadmin.sosh.com:
+    container_name: peer1.superadmin.sosh.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer1.superadmin.sosh.com
+    networks:
+      - network
+
+  peer0.users.sosh.com:
+    container_name: peer0.users.sosh.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer0.users.sosh.com
+    networks:
+      - network
+
+  peer1.users.sosh.com:
+    container_name: peer1.users.sosh.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer1.users.sosh.com
+    networks:
+      - network
+
+  cli:
+    container_name: cli
+    image: hyperledger/fabric-tools:$IMAGE_TAG
+    tty: true
+    stdin_open: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      #- FABRIC_LOGGING_SPEC=DEBUG
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_ID=cli
+      - CORE_PEER_ADDRESS=peer0.superadmin.sosh.com:7051
+      - CORE_PEER_LOCALMSPID=superadminMSP
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/superadmin.sosh.com/peers/peer0.superadmin.sosh.com/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/superadmin.sosh.com/peers/peer0.superadmin.sosh.com/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/superadmin.sosh.com/peers/peer0.superadmin.sosh.com/tls/ca.crt
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/superadmin.sosh.com/users/Admin@superadmin.sosh.com/msp
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: /bin/bash
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./../chaincode/:/opt/gopath/src/github.com/hyperledger/fabric-samples/chaincode
+        - ./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
+        - ./scripts:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/
+        - ./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
+    depends_on:
+      - orderer.sosh.com
+      - peer0.superadmin.sosh.com
+      - peer1.superadmin.sosh.com
+      - peer0.users.sosh.com
+      - peer1.users.sosh.com
+    networks:
+      - network

@@ -1,0 +1,85 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '2'
+
+volumes:
+  orderer2.sosh.com:
+  orderer3.sosh.com:
+  orderer4.sosh.com:
+  orderer5.sosh.com:
+
+networks:
+  network:
+
+services:
+
+  orderer2.sosh.com:
+    extends:
+      file: base/peer-base.yaml
+      service: orderer-base
+    environment:
+      - ORDERER_GENERAL_LISTENPORT=8050
+    container_name: orderer2.sosh.com
+    networks:
+      - network
+    volumes:
+      - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+      - ./crypto-config/ordererOrganizations/sosh.com/orderers/orderer2.sosh.com/msp:/var/hyperledger/orderer/msp
+      - ./crypto-config/ordererOrganizations/sosh.com/orderers/orderer2.sosh.com/tls/:/var/hyperledger/orderer/tls
+      - orderer2.sosh.com:/var/hyperledger/production/orderer
+    ports:
+      - 8050:8050
+
+  orderer3.sosh.com:
+    extends:
+      file: base/peer-base.yaml
+      service: orderer-base
+    environment:
+      - ORDERER_GENERAL_LISTENPORT=9050
+    container_name: orderer3.sosh.com
+    networks:
+      - network
+    volumes:
+      - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+      - ./crypto-config/ordererOrganizations/sosh.com/orderers/orderer3.sosh.com/msp:/var/hyperledger/orderer/msp
+      - ./crypto-config/ordererOrganizations/sosh.com/orderers/orderer3.sosh.com/tls/:/var/hyperledger/orderer/tls
+      - orderer3.sosh.com:/var/hyperledger/production/orderer
+    ports:
+      - 9050:9050
+
+  orderer4.sosh.com:
+    extends:
+      file: base/peer-base.yaml
+      service: orderer-base
+    environment:
+      - ORDERER_GENERAL_LISTENPORT=10050
+    container_name: orderer4.sosh.com
+    networks:
+      - network
+    volumes:
+      - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+      - ./crypto-config/ordererOrganizations/sosh.com/orderers/orderer4.sosh.com/msp:/var/hyperledger/orderer/msp
+      - ./crypto-config/ordererOrganizations/sosh.com/orderers/orderer4.sosh.com/tls/:/var/hyperledger/orderer/tls
+      - orderer4.sosh.com:/var/hyperledger/production/orderer
+    ports:
+      - 10050:10050
+
+  orderer5.sosh.com:
+    extends:
+      file: base/peer-base.yaml
+      service: orderer-base
+    environment:
+      - ORDERER_GENERAL_LISTENPORT=11050
+    container_name: orderer5.sosh.com
+    networks:
+      - network
+    volumes:
+      - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+      - ./crypto-config/ordererOrganizations/sosh.com/orderers/orderer5.sosh.com/msp:/var/hyperledger/orderer/msp
+      - ./crypto-config/ordererOrganizations/sosh.com/orderers/orderer5.sosh.com/tls/:/var/hyperledger/orderer/tls
+      - orderer5.sosh.com:/var/hyperledger/production/orderer
+    ports:
+      - 11050:11050
